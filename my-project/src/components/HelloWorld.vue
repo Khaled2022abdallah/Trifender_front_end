@@ -1,5 +1,5 @@
 <template>
-  <div class="hello">
+
     <!-- <h1>{{ msg }}</h1> -->
     <!-- <p>
       For a guide and recipes on how to configure / customize this project,<br>
@@ -27,9 +27,16 @@
       <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
       <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
     </ul> -->
+  <div class="hello">
     <h1>Hello world</h1>
     <h3>welcome Mr. Khaled</h3>
   </div>
+
+  <p class="input-container">
+    <input type="text" placeholder="Enter your name" name="text" id="text" class="input-field" autocomplete="name">
+    <label class="input-label" for="text">Name</label>
+</p>
+
 </template>
 
 <script>
@@ -57,4 +64,61 @@ li {
 a {
   color: #42b983;
 }
+
+.input-container {
+  --c-text: rgb(50, 50, 80);
+  --c-bg: rgb(252, 252, 252);
+  --c-outline: rgb(55, 45 , 190);
+  display: grid;
+  gap: 1ch;
+  position: relative;
+  max-width: 190px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: black;
+}
+
+.input-field {
+  padding: 0.5em 0.75em;
+  border-radius: 0.2em;
+  border: 1px solid var(--c-border, currentColor);
+  color: var(--c-text);
+  font-size: 1rem;
+  letter-spacing: 0.1ch;
+  width: 100%;
+}
+
+.input-field:not(:placeholder-shown) + .input-label {
+  transform: translateY(-220%);
+  opacity: 1;
+}
+
+.input-field:invalid {
+  --c-border: rgb(230, 85, 60);
+  --c-text: rgb(230, 85, 60);
+  --c-outline: rgb(230, 85, 60);
+}
+
+.input-field:is(:disabled, :read-only) {
+  --c-border: rgb(150, 150, 150);
+  --c-text: rgb(170, 170, 170);
+}
+
+.input-field:is(:focus, :focus-visible) {
+  outline: 2px solid var(--c-outline);
+  outline-offset: 2px;
+}
+
+.input-label {
+  --timing: 200ms ease-in;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transition: transform var(--timing),
+    opacity var(--timing);
+  transform: translateY(-50%);
+  opacity: 0;
+  color: var(--c-text);
+  font-weight: 500;
+}
+
 </style>
