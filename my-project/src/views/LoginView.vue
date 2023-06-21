@@ -1,19 +1,42 @@
 <template>
   <div class="form">
-    <!-- Your existing template code -->
+    <div class="subtitle">Let's create your account!</div>
+    <div class="input-container ic1">
+      <input id="username" class="input" type="text" placeholder="">
+      <div class="cut"></div>
+      <label for="username" class="placeholder">User name</label>
+    </div>
+    <div class="input-container ic2">
+      <input id="email" class="input" type="text" placeholder="">
+      <div class="cut cut-short"></div>
+      <label for="email" class="placeholder">Email</label>
+    </div>
+    <div class="input-container ic2">
+      <input id="age" class="input" type="number" placeholder="">
+      <div class="cut"></div>
+      <label for="age" class="placeholder">Age</label>
+    </div>
+    <div class="input-container ic2">
+      <select id="gender" class="input">
+        <option value="" disabled selected></option>
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+      </select>
+      <div class="cut cut-short"></div>
+      <label for="gender" class="placeholder">Gender</label>
+    </div>
     <div class="input-container ic2">
       <input id="city" class="input" type="text" placeholder="">
       <div class="cut cut-short"></div>
       <label for="city" class="placeholder">City</label>
     </div>
-    <button type="button" class="submit" @click="handleSubmit">Submit</button>
     <p>{{ message }}</p> <!-- Display the message -->
+    <button type="button" class="submit" @click="handleSubmit">Submit</button>
   </div>
 </template>
+  
 
 <script>
-import { createUser } from '../api'; // Import the createUser function
-
 export default {
   name: "LoginView",
   data() {
@@ -23,26 +46,13 @@ export default {
   },
   methods: {
     async handleSubmit() {
-      console.log("Submit button clicked!");
       const username = document.getElementById("username").value;
       const email = document.getElementById("email").value;
       const age = document.getElementById("age").value;
       const gender = document.getElementById("gender").value === "male" ? "1" : "2";
       const city = document.getElementById("city").value;
 
-      // Check if the city exists in the database
-      let cityId = null;
-      if (city) {
-        try {
-          const response = await fetch(`http://localhost:3000/cities?name=${city}`);
-          const data = await response.json();
-          if (data && data.length > 0) {
-            cityId = data[0].id;
-          }
-        } catch (error) {
-          console.error(error);
-        }
-      }
+      const cityId = await this.fetchCityId(city);
 
       const formData = {
         username,
@@ -52,22 +62,51 @@ export default {
         cityId,
       };
 
-      try {
-        const createdUser = await createUser(formData); // Use await here to wait for the async operation
+      const createdUser = await this.createUser(formData);
 
-        // Handle the response from the server
-        // e.g., show a success message or redirect
+      if (createdUser && createdUser.id) {
         this.message = "Form submitted successfully!";
-        console.log(createdUser); // You can access the server response here
-      } catch (error) {
-        // Handle any errors that occurred during the request
-        console.error(error);
+        console.log(createdUser);
+      } else {
         this.message = "Error submitting the form.";
       }
+    },
+    async fetchCityId(city) {
+      if (city) {
+        try {
+          const response = await fetch(`http://localhost:3000/cities?name=${city}`);
+          const data = await response.json();
+          if (data && data.length > 0) {
+            return data[0].id;
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
+      return null;
+    },
+    async createUser(userData) {
+      try {
+        const response = await fetch("http://localhost:3000/users", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(userData),
+        });
+        if (response.ok) {
+          const createdUser = await response.json();
+          return createdUser;
+        }
+      } catch (error) {
+        console.error(error);
+      }
+      return null;
     },
   },
 };
 </script>
+
 
   
 <style>
