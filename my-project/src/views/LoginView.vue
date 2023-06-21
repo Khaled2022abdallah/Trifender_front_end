@@ -1,39 +1,54 @@
 <!-- views/LoginView.vue -->
 <template>
-    <div class="form">
-      <div class="subtitle">Let's create your account!</div>
-      <div class="input-container ic1">
-        <input id="firstname" class="input" type="text" placeholder="">
-        <div class="cut"></div>
-        <label for="firstname" class="placeholder">First name</label>
-      </div>
-      <div class="input-container ic2">
-        <input id="lastname" class="input" type="text" placeholder="">
-        <div class="cut"></div>
-        <label for="lastname" class="placeholder">Last name</label>
-      </div>
-      <div class="input-container ic2">
-        <input id="email" class="input" type="text" placeholder="">
-        <div class="cut cut-short"></div>
-        <label for="email" class="placeholder">Email</label>
-      </div>
-      <button type="text" class="submit">submit</button>
+  <div class="form">
+    <div class="subtitle">Let's create your account!</div>
+    <div class="input-container ic1">
+      <input id="firstname" class="input" type="text" placeholder="">
+      <div class="cut"></div>
+      <label for="firstname" class="placeholder">First name</label>
     </div>
-  </template>
+    <div class="input-container ic2">
+      <input id="lastname" class="input" type="text" placeholder="">
+      <div class="cut"></div>
+      <label for="lastname" class="placeholder">Last name</label>
+    </div>
+    <div class="input-container ic2">
+      <input id="email" class="input" type="text" placeholder="">
+      <div class="cut cut-short"></div>
+      <label for="email" class="placeholder">Email</label>
+    </div>
+    <div class="input-container ic2">
+      <input id="age" class="input" type="number" placeholder="">
+      <div class="cut"></div>
+      <label for="age" class="placeholder">Age</label>
+    </div>
+    <div class="input-container ic2">
+      <select id="gender" class="input">
+        <option value="" disabled selected></option>
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+        <option value="other">Other</option>
+      </select>
+      <div class="cut cut-short"></div>
+      <label for="gender" class="placeholder">Gender</label>
+    </div>
+    <button type="text" class="submit">Submit</button>
+  </div>
+</template>
   
-  <script>
-  export default {
-    name:"LoginView"
-    // Add any necessary component logic here
-  }
-  </script>
+<script>
+export default {
+  name: "LoginView"
+  // Add any necessary component logic here
+}
+</script>
   
-  <style>
- .form {
+<style>
+.form {
   background-color: #15172b;
   border-radius: 20px;
   box-sizing: border-box;
-  height: 350px;
+  height: 450px;
   padding: 20px;
   width: 320px;
 }
@@ -143,5 +158,5 @@
   background-color: #06b;
 }
 
-  </style>
+</style>
   
