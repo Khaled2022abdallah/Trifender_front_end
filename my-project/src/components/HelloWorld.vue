@@ -6,8 +6,6 @@
       <router-link to="/">Home</router-link>
       <router-link to="/login">Login</router-link>
     </nav>
-    <h1>Hello world</h1>
-    <h3>Welcome Mr. Khaled</h3>
   </div>
 </template>
 
