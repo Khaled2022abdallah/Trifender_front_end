@@ -1,11 +1,13 @@
 <!-- components/HelloWorld.vue -->
 
 <template>
-  <div class="hello">
+  <div>
     <nav>
       <router-link to="/">Home</router-link>
       <router-link to="/login">Login</router-link>
     </nav>
+    <div class="hello">
+      </div>
   </div>
 </template>
 

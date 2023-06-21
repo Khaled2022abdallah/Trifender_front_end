@@ -49,9 +49,19 @@ export default {
   border-radius: 20px;
   box-sizing: border-box;
   height: 450px;
-  padding: 20px;
   width: 320px;
+  
+  /* Center the form */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  
+  /* Add some padding */
+  padding: 20px;
 }
+
+
 
 .title {
   color: #eee;
