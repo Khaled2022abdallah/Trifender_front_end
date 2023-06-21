@@ -46,14 +46,16 @@ export default {
   },
   methods: {
     async handleSubmit() {
-      const username = document.getElementById("username").value;
-      const email = document.getElementById("email").value;
-      const age = document.getElementById("age").value;
-      const gender = document.getElementById("gender").value === "male" ? "1" : "2";
-      const city = document.getElementById("city").value;
+  const username = document.getElementById("username").value;
+  const email = document.getElementById("email").value;
+  const age = document.getElementById("age").value;
+  const gender = document.getElementById("gender").value === "male" ? "1" : "2";
+  const city = document.getElementById("city").value;
 
-      const cityId = await this.fetchCityId(city);
+  try {
+    const cityId = await this.fetchCityId(city);
 
+    if (cityId) {
       const formData = {
         username,
         email,
@@ -67,24 +69,31 @@ export default {
       if (createdUser && createdUser.id) {
         this.message = "Form submitted successfully!";
         console.log(createdUser);
-      } else {
-        this.message = "Error submitting the form.";
+        // Perform any additional UI updates or navigation here
+        return; // Exit the method here to prevent displaying the error message
       }
-    },
+    }
+  } catch (error) {
+    console.error(error);
+  }
+
+  this.message = "Error submitting the form.";
+},
     async fetchCityId(city) {
-      if (city) {
-        try {
-          const response = await fetch(`http://localhost:3000/cities?name=${city}`);
-          const data = await response.json();
-          if (data && data.length > 0) {
-            return data[0].id;
-          }
-        } catch (error) {
-          console.error(error);
-        }
+  if (city) {
+    try {
+      const response = await fetch(`http://localhost:3000/getcities?name=${city}`);
+      const data = await response.json();
+      console.log(data); // Log the data to inspect the response
+      if (data.cities && data.cities.length > 0) {
+        return data.cities[0].id;
       }
-      return null;
-    },
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  return null;
+},
     async createUser(userData) {
       try {
         const response = await fetch("http://localhost:3000/users", {
