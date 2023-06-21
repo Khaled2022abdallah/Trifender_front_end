@@ -1,4 +1,3 @@
-<!-- views/LoginView.vue -->
 <template>
   <div class="form">
     <div class="subtitle">Let's create your account!</div>
@@ -27,21 +26,68 @@
         <option value="" disabled selected></option>
         <option value="male">Male</option>
         <option value="female">Female</option>
-        <option value="other">Other</option>
       </select>
       <div class="cut cut-short"></div>
       <label for="gender" class="placeholder">Gender</label>
     </div>
-    <button type="text" class="submit">Submit</button>
+    <div class="input-container ic2">
+      <input id="city" class="input" type="text" placeholder="">
+      <div class="cut cut-short"></div>
+      <label for="city" class="placeholder">City</label>
+    </div>
+    <button type="button" class="submit" @click="handleSubmit">Submit</button>
   </div>
 </template>
   
 <script>
 export default {
-  name: "LoginView"
-  // Add any necessary component logic here
-}
+  name: "LoginView",
+  data() {
+    return {
+      message: "",
+    };
+  },
+  methods: {
+    handleSubmit() {
+      const username = document.getElementById('firstname').value;
+      const email = document.getElementById('email').value;
+      const age = document.getElementById('age').value;
+      const gender = document.getElementById('gender').value === 'male' ? '1' : '2';
+      const city = document.getElementById('city').value;
+
+      const formData = {
+        username,
+        email,
+        age,
+        gender,
+        city,
+      };
+
+      // Send the form data to the specified endpoint
+      fetch(`http://localhost:3000/users`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+        .then(response => {
+          // Handle the response from the server
+          // e.g., show a success message or redirect
+          this.message = "Form submitted successfully!";
+        })
+        .catch(error => {
+          // Handle any errors that occurred during the request
+          console.error(error);
+          this.message = "Error submitting the form.";
+        });
+    },
+  },
+};
 </script>
+
+
+
   
 <style>
 .form {
