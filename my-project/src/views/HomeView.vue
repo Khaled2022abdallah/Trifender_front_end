@@ -29,6 +29,8 @@
   </div>
 </template>
 
+
+
 <script>
 export default {
   name: 'HomeView',
@@ -59,32 +61,14 @@ export default {
     }
   },
   methods: {
-    async toggleImageVisibility(country) {
-  try {
-    for (const item of this.additionalImages) {
-      if (item.name === country) {
-        item.visible = true;
-        const images = await this.getImagesForTable(1); // Assuming relatedType 1 is for countries
-        item.images = images.filter((image) => image.relatedId === parseInt(item.name));
-      } else {
-        item.visible = false;
-        item.images = []; // Reset images for non-selected countries
-      }
-    }
-  } catch (error) {
-    console.error(error);
-  }
-},
-    async getImagesForTable(tableType) {
-      const response = await fetch(`http://localhost:3000/getimages?tableType=${tableType}`);
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch images');
-      }
-
-      const data = await response.json();
-      console.log('Retrieved images:', data.images); // Add this console log
-      return data.images;
+    toggleImageVisibility(country) {
+      this.additionalImages.forEach((item) => {
+        if (item.name === country) {
+          item.visible = true;
+        } else {
+          item.visible = false;
+        }
+      });
     }
 
   }
@@ -127,3 +111,5 @@ export default {
   margin: 10px;
 }
 </style>
+
+

@@ -7,7 +7,7 @@
       <router-link to="/login">Login</router-link>
     </nav>
     <div class="hello">
-      </div>
+    </div>
   </div>
 </template>
 
@@ -32,14 +32,17 @@ export default {
 h3 {
   margin: 40px 0 0;
 }
+
 ul {
   list-style-type: none;
   padding: 0;
 }
+
 li {
   display: inline-block;
   margin: 0 10px;
 }
+
 a {
   color: #42b983;
 }
@@ -47,7 +50,7 @@ a {
 .input-container {
   --c-text: rgb(50, 50, 80);
   --c-bg: rgb(252, 252, 252);
-  --c-outline: rgb(55, 45 , 190);
+  --c-outline: rgb(55, 45, 190);
   display: grid;
   gap: 1ch;
   position: relative;
@@ -66,7 +69,7 @@ a {
   width: 100%;
 }
 
-.input-field:not(:placeholder-shown) + .input-label {
+.input-field:not(:placeholder-shown)+.input-label {
   transform: translateY(-220%);
   opacity: 1;
 }
@@ -115,5 +118,4 @@ nav a.router-link-active {
   color: #dc2f55;
   font-weight: bold;
 }
-
 </style>

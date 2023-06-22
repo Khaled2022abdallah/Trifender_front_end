@@ -1,4 +1,3 @@
-<!-- views/LoginView.vue -->
 <template>
   <div class="form">
     <div class="subtitle">Let's create your account!</div>
@@ -31,7 +30,7 @@
       <div class="cut cut-short"></div>
       <label for="city" class="placeholder">City</label>
     </div>
-    <p>{{ message }}</p> <!-- Display the message -->
+    <p class="message">{{ message }}</p> <!-- Display the message -->
     <button type="button" class="submit" @click="handleSubmit">Submit</button>
   </div>
 </template>
@@ -129,6 +128,9 @@ export default {
 
 
 <style>
+.message{
+  color: #eee;
+}
 .form {
   background-color: #15172b;
   border-radius: 20px;
