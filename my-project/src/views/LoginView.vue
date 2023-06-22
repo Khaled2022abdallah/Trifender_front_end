@@ -54,31 +54,29 @@ export default {
       const city = document.getElementById("city").value;
 
       try {
-        const cityId = await this.fetchCityId(city);
+        let cityId = null;
+        if (city) {
+          cityId = await this.fetchCityId(city);
+        }
 
-        if (cityId) {
-          const formData = {
-            username,
-            email,
-            age,
-            gender,
-            cityId,
-          };
+        const formData = {
+          username,
+          email,
+          age,
+          gender,
+          cityId,
+        };
 
-          const createdUser = await this.createUser(formData);
+        const createdUser = await this.createUser(formData);
 
-          if (createdUser && createdUser.user) {
-            console.log(createdUser.user); // Log the created user object
-            this.message = "Form submitted successfully!";
-            // Perform any additional UI updates or navigation here
-            return; // Exit the method here to prevent displaying the error message
-          } else {
-            console.error("Error creating user:", createdUser);
-            this.message = "Error creating the user.";
-          }
+        if (createdUser && createdUser.user) {
+          console.log(createdUser.user); // Log the created user object
+          this.message = "Form submitted successfully!";
+          // Perform any additional UI updates or navigation here
+          return; // Exit the method here to prevent displaying the error message
         } else {
-          console.error("City not found:", city);
-          this.message = "City not found.";
+          console.error("Error creating user:", createdUser);
+          this.message = "Error creating the user.";
         }
       } catch (error) {
         console.error("Error submitting the form:", error);
@@ -87,18 +85,17 @@ export default {
     },
 
     async fetchCityId(city) {
-      if (city) {
-        try {
-          const response = await fetch(`http://localhost:3000/getcities?name=${city}`);
-          const data = await response.json();
-          console.log(data); // Log the data to inspect the response
-          if (data.cities && data.cities.length > 0) {
-            return data.cities[0].id;
-          }
-        } catch (error) {
-          console.error("Error fetching city ID:", error);
-          throw error; // Rethrow the error to handle it in the calling function
+      try {
+        const response = await fetch(`http://localhost:3000/getcities?name=${city}`);
+        const data = await response.json();
+        console.log(data); // Log the data to inspect the response
+        if (data.cities && data.cities.length > 0) {
+          return data.cities[0].id;
+        } else {
+          console.error("City not found:", city);
         }
+      } catch (error) {
+        console.error("Error fetching city ID:", error);
       }
       return null;
     },
@@ -128,6 +125,7 @@ export default {
   },
 };
 </script>
+
 
 
 
