@@ -1,3 +1,4 @@
+<!-- views/LoginView.vue -->
 <template>
   <div class="form">
     <div class="subtitle">Let's create your account!</div>
@@ -46,54 +47,62 @@ export default {
   },
   methods: {
     async handleSubmit() {
-  const username = document.getElementById("username").value;
-  const email = document.getElementById("email").value;
-  const age = document.getElementById("age").value;
-  const gender = document.getElementById("gender").value === "male" ? "1" : "2";
-  const city = document.getElementById("city").value;
+      const username = document.getElementById("username").value;
+      const email = document.getElementById("email").value;
+      const age = document.getElementById("age").value;
+      const gender = document.getElementById("gender").value === "male" ? "1" : "2";
+      const city = document.getElementById("city").value;
 
-  try {
-    const cityId = await this.fetchCityId(city);
+      try {
+        const cityId = await this.fetchCityId(city);
 
-    if (cityId) {
-      const formData = {
-        username,
-        email,
-        age,
-        gender,
-        cityId,
-      };
+        if (cityId) {
+          const formData = {
+            username,
+            email,
+            age,
+            gender,
+            cityId,
+          };
 
-      const createdUser = await this.createUser(formData);
+          const createdUser = await this.createUser(formData);
 
-      if (createdUser && createdUser.id) {
-        this.message = "Form submitted successfully!";
-        console.log(createdUser);
-        // Perform any additional UI updates or navigation here
-        return; // Exit the method here to prevent displaying the error message
+          if (createdUser && createdUser.user) {
+            console.log(createdUser.user); // Log the created user object
+            this.message = "Form submitted successfully!";
+            // Perform any additional UI updates or navigation here
+            return; // Exit the method here to prevent displaying the error message
+          } else {
+            console.error("Error creating user:", createdUser);
+            this.message = "Error creating the user.";
+          }
+        } else {
+          console.error("City not found:", city);
+          this.message = "City not found.";
+        }
+      } catch (error) {
+        console.error("Error submitting the form:", error);
+        this.message = "Error submitting the form.";
       }
-    }
-  } catch (error) {
-    console.error(error);
-  }
+    },
 
-  this.message = "Error submitting the form.";
-},
     async fetchCityId(city) {
-  if (city) {
-    try {
-      const response = await fetch(`http://localhost:3000/getcities?name=${city}`);
-      const data = await response.json();
-      console.log(data); // Log the data to inspect the response
-      if (data.cities && data.cities.length > 0) {
-        return data.cities[0].id;
+      if (city) {
+        try {
+          const response = await fetch(`http://localhost:3000/getcities?name=${city}`);
+          const data = await response.json();
+          console.log(data); // Log the data to inspect the response
+          if (data.cities && data.cities.length > 0) {
+            return data.cities[0].id;
+          }
+        } catch (error) {
+          console.error("Error fetching city ID:", error);
+          throw error; // Rethrow the error to handle it in the calling function
+        }
       }
-    } catch (error) {
-      console.error(error);
-    }
-  }
-  return null;
-},
+      return null;
+    },
+
     async createUser(userData) {
       try {
         const response = await fetch("http://localhost:3000/users", {
@@ -106,15 +115,20 @@ export default {
         if (response.ok) {
           const createdUser = await response.json();
           return createdUser;
+        } else {
+          const errorResponse = await response.json();
+          console.error("Error creating user:", errorResponse);
+          throw new Error("Failed to create user"); // Throw an error to handle it in the calling function
         }
       } catch (error) {
-        console.error(error);
+        console.error("Error creating user:", error);
+        throw error; // Rethrow the error to handle it in the calling function
       }
-      return null;
     },
   },
 };
 </script>
+
 
 
   
