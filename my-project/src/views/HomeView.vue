@@ -1,3 +1,4 @@
+<!-- HomeView.vue -->
 <template>
   <div>
     <h2>Welcome to the Home page</h2>
@@ -20,13 +21,13 @@
   <div v-for="(country, index) in filteredAdditionalImages" :key="index">
     <div v-if="country.visible" class="additional-images">
       <h3>{{ country.name }}</h3>
-      <img v-for="(image, imageIndex) in country.images" :key="imageIndex" :src="image.src" :alt="image.alt" class="additional-image">
+        <img v-for="(image, imageIndex) in country.images" :key="imageIndex" :src="'${image.src}.jpeg'" :alt="image.alt" 
+        class="additional-image">
+
     </div>
     <div v-if="!country.visible && country.images.length === 0" class="no-images">No additional images available</div>
   </div>
 </template>
-
-
 
 <script>
 export default {
@@ -37,29 +38,17 @@ export default {
         {
           name: 'lebanon',
           visible: false,
-          images: [
-            { src: require('./Lebanon_images/lebanon1.jpeg'), alt: 'Lebanon Image 1' },
-            { src: require('./Lebanon_images/lebanon2.jpeg'), alt: 'Lebanon Image 2' },
-            { src: require('./Lebanon_images/lebanon3.jpeg'), alt: 'Lebanon Image 3' }
-          ]
+          images: []
         },
         {
           name: 'syria',
           visible: false,
-          images: [
-            { src: require('./Syria_images/syria1.jpeg'), alt: 'Syria Image 1' },
-            { src: require('./Syria_images/syria2.jpeg'), alt: 'Syria Image 2' },
-            { src: require('./Syria_images/syria3.jpeg'), alt: 'Syria Image 3' }
-          ]
+          images: []
         },
         {
           name: 'jordan',
           visible: false,
-          images: [
-            { src: require('./Jordan_images/jordan1.jpeg'), alt: 'Jordan Image 1' },
-            { src: require('./Jordan_images/jordan2.jpeg'), alt: 'Jordan Image 2' },
-            { src: require('./Jordan_images/jordan3.jpeg'), alt: 'Jordan Image 3' }
-          ]
+          images: []
         }
       ]
     };
@@ -70,20 +59,38 @@ export default {
     }
   },
   methods: {
-    toggleImageVisibility(country) {
-      this.additionalImages.forEach((item) => {
-        if (item.name === country) {
-          item.visible = true;
-        } else {
-          item.visible = false;
-        }
-      });
+    async toggleImageVisibility(country) {
+  try {
+    for (const item of this.additionalImages) {
+      if (item.name === country) {
+        item.visible = true;
+        const images = await this.getImagesForTable(1); // Assuming relatedType 1 is for countries
+        item.images = images.filter((image) => image.relatedId === parseInt(item.name));
+      } else {
+        item.visible = false;
+        item.images = []; // Reset images for non-selected countries
+      }
     }
+  } catch (error) {
+    console.error(error);
+  }
+},
+    async getImagesForTable(tableType) {
+      const response = await fetch(`http://localhost:3000/getimages?tableType=${tableType}`);
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch images');
+      }
+
+      const data = await response.json();
+      console.log('Retrieved images:', data.images); // Add this console log
+      return data.images;
+    }
+
   }
 };
+
 </script>
-
-
 
 <style>
 .country-container {

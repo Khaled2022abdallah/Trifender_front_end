@@ -128,8 +128,6 @@ export default {
 
 
 
-
-  
 <style>
 .form {
   background-color: #15172b;
