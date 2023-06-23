@@ -1,28 +1,27 @@
 <template>
   <div>
     <h2>Welcome to the Home page</h2>
-    <!-- Add your content here -->
-  </div>
-  <div class="country-container">
-    <div @click="toggleImageVisibility('lebanon')">
-      <img src="./Lebanon_images/lebanon.jpeg" alt="Lebanon" class="country-image">
-      <label class="country-label">Lebanon</label>
+    <div class="country-container">
+      <div @click="toggleImageVisibility('lebanon')">
+        <img src="./Lebanon_images/lebanon.jpeg" alt="Lebanon" class="country-image">
+        <label class="country-label">Lebanon</label>
+      </div>
+      <div @click="toggleImageVisibility('syria')">
+        <img src="./Syria_images/syria.jpeg" alt="Syria" class="country-image">
+        <label class="country-label">Syria</label>
+      </div>
+      <div @click="toggleImageVisibility('jordan')">
+        <img src="./Jordan_images/jordan.jpeg" alt="Jordan" class="country-image">
+        <label class="country-label">Jordan</label>
+      </div>
     </div>
-    <div @click="toggleImageVisibility('syria')">
-      <img src="./Syria_images/syria.jpeg" alt="Syria" class="country-image">
-      <label class="country-label">Syria</label>
+    <div v-for="(country, index) in filteredAdditionalImages" :key="index">
+      <div v-if="country.visible" class="additional-images">
+        <h3>{{ country.name }}</h3>
+        <img v-for="(image, imageIndex) in country.images" :key="imageIndex" :src="image.src" :alt="image.name" class="additional-image">
+      </div>
+      <div v-if="!country.visible && country.images.length === 0" class="no-images">No additional images available</div>
     </div>
-    <div @click="toggleImageVisibility('jordan')">
-      <img src="./Jordan_images/jordan.jpeg" alt="Jordan" class="country-image">
-      <label class="country-label">Jordan</label>
-    </div>
-  </div>
-  <div v-for="(country, index) in filteredAdditionalImages" :key="index">
-    <div v-if="country.visible" class="additional-images">
-      <h3>{{ country.name }}</h3>
-      <img v-for="(image, imageIndex) in country.images" :key="imageIndex" :src="image.src" :alt="image.alt" class="additional-image">
-    </div>
-    <div v-if="!country.visible && country.images.length === 0" class="no-images">No additional images available</div>
   </div>
 </template>
 
@@ -58,10 +57,10 @@ export default {
   methods: {
     async toggleImageVisibility(country) {
       this.additionalImages.forEach((item) => {
-        item.visible = item.name === country;
+        item.visible = item.name === country ? !item.visible : false;
       });
 
-      const { images } = await fetchImagesFromBackend(country);
+      const images = await fetchImagesFromBackend(country);
       this.additionalImages.find((item) => item.name === country).images = images;
     }
   }
@@ -69,12 +68,30 @@ export default {
 
 async function fetchImagesFromBackend(country) {
   try {
-    const response = await fetch(`localhost:3000/getimages?country=${country}`);
+    const response = await fetch(`http://localhost:3000/getimages?country=${country}`);
     if (!response.ok) {
       throw new Error('Failed to fetch images from the backend');
     }
     const data = await response.json();
-    return data;
+    if (data) {
+      console.log(data);
+    }
+    const images = await Promise.all(
+      data.images.map((image) => {
+        return new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            resolve({
+              id: image.id,
+              name: image.name,
+              src: reader.result,
+            });
+          };
+          reader.readAsDataURL(new Blob([new Uint8Array(image.image.data)]));
+        });
+      })
+    );
+    return images;
   } catch (error) {
     console.error('An error occurred while fetching images:', error);
     throw error;
@@ -117,6 +134,12 @@ async function fetchImagesFromBackend(country) {
   height: 150px;
   margin: 10px;
 }
+
+.no-images {
+  text-align: center;
+  margin-top: 20px;
+  font-family: sans-serif;
+  font-size: 16px;
+  color: #888;
+}
 </style>
-
-
