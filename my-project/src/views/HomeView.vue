@@ -1,4 +1,3 @@
-<!-- HomeView.vue -->
 <template>
   <div>
     <h2>Welcome to the Home page</h2>
@@ -21,15 +20,11 @@
   <div v-for="(country, index) in filteredAdditionalImages" :key="index">
     <div v-if="country.visible" class="additional-images">
       <h3>{{ country.name }}</h3>
-        <img v-for="(image, imageIndex) in country.images" :key="imageIndex" :src="'${image.src}.jpeg'" :alt="image.alt" 
-        class="additional-image">
-
+      <img v-for="(image, imageIndex) in country.images" :key="imageIndex" :src="image.src" :alt="image.alt" class="additional-image">
     </div>
     <div v-if="!country.visible && country.images.length === 0" class="no-images">No additional images available</div>
   </div>
 </template>
-
-
 
 <script>
 export default {
@@ -61,20 +56,32 @@ export default {
     }
   },
   methods: {
-    toggleImageVisibility(country) {
+    async toggleImageVisibility(country) {
       this.additionalImages.forEach((item) => {
-        if (item.name === country) {
-          item.visible = true;
-        } else {
-          item.visible = false;
-        }
+        item.visible = item.name === country;
       });
-    }
 
+      const { images } = await fetchImagesFromBackend(country);
+      this.additionalImages.find((item) => item.name === country).images = images;
+    }
   }
 };
 
+async function fetchImagesFromBackend(country) {
+  try {
+    const response = await fetch(`localhost:3000/getimages?country=${country}`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch images from the backend');
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('An error occurred while fetching images:', error);
+    throw error;
+  }
+}
 </script>
+
 
 <style>
 .country-container {
